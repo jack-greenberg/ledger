@@ -1,0 +1,12 @@
+[package]
+name = "ledger"
+version = "0.1.0"
+authors = ["Jack Greenberg <j@jackgreenberg.co>"]
+edition = "2018"
+
+[dependencies]
+chrono = { version = "0.4", features = ["serde"] }
+toml = "0.4.2"
+csv = "1.1"
+serde = { version = "1.0", features = ["derive"] }
+clap = "2.33.3"
