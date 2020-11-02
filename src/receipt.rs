@@ -1,12 +1,12 @@
-use chrono::NaiveDate;
+use chrono::{NaiveDate, Local};
 use std::error::Error;
 use std::fs::File;
 use std::io::Read;
-use std::path::Path;
+use std::io::Write;
 
 extern crate yaml_rust;
 use crate::person::Person;
-use yaml_rust::{scanner::ScanError, Yaml, YamlLoader};
+use yaml_rust::YamlLoader;
 
 #[derive(Debug, Eq, PartialEq)]
 struct Receipt {
@@ -17,6 +17,18 @@ struct Receipt {
 }
 
 impl Receipt {
+    pub fn create(&self) -> Result<(), Box<dyn Error>> {
+        let template = format!(
+            "date: {}\nbuyer:\npurpose:\nexclude:\n\n---\n",
+            Local::now().format("%Y-%m-%d")
+        );
+        let path: &str = &self.date.format("receipts/%Y-%m-%d.yml").to_string();
+
+        let mut file = File::create(path)?;
+        file.write_all(template.as_bytes())?;
+        Ok(())
+    }
+
     pub fn from_file(path: String) -> Result<Receipt, Box<dyn Error>> {
         let mut file = File::open(&path)?;
         let mut receipt = String::new();
@@ -43,8 +55,7 @@ impl Receipt {
 
         let r = Receipt {
             date,
-            buyer,
-            purpose,
+            buyer, purpose,
             exclude,
         };
 
@@ -66,10 +77,19 @@ mod test {
             r,
             Receipt {
                 date: NaiveDate::parse_from_str("2020-11-01", "%Y-%m-%d").unwrap(),
-                buyer: Person { name: String::from("Nathan"), venmo: None },
+                buyer: Person {
+                    name: String::from("Nathan"),
+                    venmo: None
+                },
                 purpose: String::from("Groceries"),
-                exclude: vec!(Person {name: String::from("Isabel"), venmo: None}),
+                exclude: vec!(Person {
+                    name: String::from("Isabel"),
+                    venmo: None
+                }),
             }
         );
     }
+
+    #[test]
+    fn create() {}
 }
