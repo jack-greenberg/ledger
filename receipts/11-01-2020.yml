@@ -1,0 +1,21 @@
+date: 2020-11-01
+buyer: Nathan
+purpose: Groceries
+exclude:
+  - Isabel
+
+
+---
+
+chicken:
+  price: 4.25
+  except:
+    - Celvi
+    - Karen
+    - Isabel
+cauliflower: 3.50
+rice: 5.25
+zucchini:
+  price: 1.30
+  except:
+    - Nathan

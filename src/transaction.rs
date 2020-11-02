@@ -1,21 +1,11 @@
 use chrono::{DateTime, Utc};
-use csv;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
 
-#[derive(Debug, Serialize, Deserialize)]
-struct Person {
-    name: String,
-}
-
-impl Person {
-    pub fn new(name: String) -> Self {
-        Person { name }
-    }
-}
+use crate::person::Person;
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Record {
+pub struct Record {
     date: DateTime<Utc>,
     recipient: Person,
     sender: Person,
@@ -36,16 +26,5 @@ impl Record {
 
         writer.serialize(self)?;
         Ok(())
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    fn record() {
-        let p1 = Person::new("Jack".to_string());
-        let p2 = Person::new("Jill".to_string());
-        let transaction = Record::new(p1, p2);
     }
 }

@@ -1,15 +1,38 @@
-use clap::{App, SubCommand};
+use clap::{crate_version, App, Arg, SubCommand};
+mod receipt;
+mod person;
+mod transaction;
 
 fn main() {
     let matches = App::new("Ledger")
-        .version("0.1.0")
+        .version(crate_version!())
         .author("Jack Greenberg <j@jackgreenberg.co>")
         .about("Record transactions for housemates")
-        .subcommand(SubCommand::with_name("test"))
-            .about("Do something")
+        .subcommand(
+            App::new("person")
+                .subcommand(
+                    SubCommand::with_name("add")
+                        .arg(
+                            Arg::with_name("NAME")
+                                .required(true)
+                                .index(1)
+                        ),
+                )
+        )
+        .subcommand(
+            App::new("transaction")
+        )
         .get_matches();
 
-    if let Some(matches) = matches.subcommand_matches("test") {
-        println!("Testing!");
-    };
+    match matches.subcommand_name() {
+        Some("person") => {
+            println!("Doing something with a person");
+        },
+        None => {
+            eprintln!("Specify a person!");
+        },
+        _ => {
+            unreachable!();
+        }
+    }
 }
